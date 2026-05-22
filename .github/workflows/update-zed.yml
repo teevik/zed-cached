@@ -87,7 +87,6 @@ jobs:
         with:
           name: ${{ vars.CACHIX_NAME }}
           authToken: ${{ secrets.CACHIX_TOKEN }}
-          skipPush: true
 
       - name: Create branch and update flake.lock
         if: steps.should_run.outputs.run == 'true'
@@ -103,11 +102,6 @@ jobs:
         if: steps.should_run.outputs.run == 'true'
         run: |
           nix build -L .#packages.x86_64-linux.default
-
-      - name: Push to Cachix
-        if: steps.should_run.outputs.run == 'true'
-        run: |
-          cachix push ${{ vars.CACHIX_NAME }} ./result
 
       - name: Push branch
         if: steps.should_run.outputs.run == 'true'
