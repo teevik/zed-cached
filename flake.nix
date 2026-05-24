@@ -20,9 +20,13 @@
       let
         livekit-libwebrtc = nixpkgs.legacyPackages.${system}.livekit-libwebrtc;
 
-        # HACK: remove when https://github.com/zed-industries/zed/issues/54225 is fixed
         package = zed.packages.${system}.default;
         patchedPackage = package.overrideAttrs (oldAttrs: {
+          preBuild = (oldAttrs.preBuild or "") + ''
+            echo stable > crates/zed/RELEASE_CHANNEL
+          '';
+
+          # HACK: remove when https://github.com/zed-industries/zed/issues/54225 is fixed
           env = (oldAttrs.env or { }) // {
             LK_CUSTOM_WEBRTC = livekit-libwebrtc;
           };
